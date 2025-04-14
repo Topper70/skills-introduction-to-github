@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Print</title>
+    <style>
+        body {
+            background-color: #35C4B5;
+            font-family: Helvetica Neue LT W1G 75 Bold;
+            background-image: url('RJSITU.jpg'); /* Add your image URL here */
+            background-size: cover; /* Ensure the image covers the entire background */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Prevent the image from repeating */
+            background-attachment: fixed; /* Keep the background image fixed in place */
+           : center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            width: 490px;
+            margin: auto;
+            text-align: center;
+        }
+        h1, h2, label {
+            color: #4D4D4D; /* Title and labels in dark color */
+        }
+        select, input, button {
+            color: #4D4D4D; /* Text inside inputs and buttons */
+            margin: 10px 0;
+            width: 100%; /* Full width for inputs and buttons */
+            padding: 10px; /* Padding for better touch interaction */
+            box-sizing: border-box; /* Ensure padding is included in the width */
+        }
+        input {
+            background-color: white; /* White background for input fields */
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 530px; 
+            height: auto; /* Maintain aspect ratio */
+        }
+        #previewLink {
+            margin-top: 20px;
+            color: #4D4D4D; /* Color for the preview link text */
+            word-wrap: break-word; /* Ensure long URLs wrap */
+        }
+    </style>
+</head>
+<body>
+
+    <img src="Bluebar.jpg" alt="Brother Logo" class="logo">
+    <div class="container">
+        <h1>Brother Demo Solutions with Smooth Print</h1>
+        <h2>Zustellungsbenachrichtigung</h2>
+        <form id="printForm">
+            <label for="text1Object" id="text1Label">Empfänger:</label><br>
+            <select id="text1Object" name="text1Object" >
+                 <option value="">Please select...</option>
+                    <option value="Sebastian Schmidt, Musterstraße 1, 64354 Reinheim, Deutschland">Sebastian Schmidt</option>
+                    <option value="Fabio Müller, Musterstraße 2, 64454 Gouwer, USA">Fabio Müller</option>
+                    <option value="Susanne Meyer, Musterstraße 3, 64554 Riemenstalden, Deutschland">Susanne Meyer</option>
+                    <option value="Marion Schulz, Petrusweg 7, 64654 Fürth, Deutschland">Marion Schulz</option>
+                    <option value="Herbert Schneider, Petrusweg 8, 64754 Hesseneck, Deutschland">Herbert Schneider</option>
+                    <option value="Franziska Hoffmann, Petrusweg 9, 64854 Eppertshausen, Deutschland">Franziska Hoffmann</option>
+                    <option value="Julia Becker, Petrusweg 10, 64954 Tel Aviv-Jaffa, Israel">Julia Becker</option>
+                    <option value="Jeanette Fischer, Ringelstraße 54, 65054 São Luís, Brasilien">Jeanette Fischer</option>
+                    <option value="Jennifer Weber, Ringelstraße 55, 65154 Võru, Estland">Jennifer Weber</option>
+            </select><br><br>
+
+            <label for="text2Object" id="text2Label">Abholung/Lieferung:</label><br>
+            <select id="text2Object" name="text2Object">
+                <option value="">Please select...</option>
+                <option value="Ihre Sendung wurde an Ihrem Wunschort hinterlegt">Ihre Sendung wurde an Ihrem Wunschort hinterlegt</option>
+                <option value="Ihre Sendung liegt in der Pakstation 7, Musterplatz 7, 77000 Musterhof">Ihre Sendung liegt in der Pakstation 7, Musterplatz 7, 77000 Musterhof</option>
+                <option value="Ihre Sendung wurde an Ihren Nachbarn ausgeliefert">Ihre Sendung wurde an Ihren Nachbarn ausgeliefert</option>
+            </select><br><br>
+
+            <label for="text3Object" id="text3Label">Abholungszeit:</label><br>
+            <select id="text3Object" name="text3Object">
+                <option value="none">none</option>
+                <option value="Ab Freitag 14:00; Öffnungszeit: Mon-Fre 08:00 - 16:00, Sam 09:00 - 13:00"><p>Ab Freitag 14:00; Öffnungszeit: Mon-Fre 08:00 - 16:00, Sam 09:00 - 13:00</p></option>
+            </select><br><br>
+
+            <label for="text4Object" id="text4Label">Versandart:</label><br>
+            <select id="text4Object" name="text4Object">
+                <option value="1 Paket">1 Paket</option>
+                <option value="2 Pakete">2 Pakete</option>
+                <option value="3 Pakete">3 Pakete</option>
+                <option value="1 Brief">1 Brief</option>
+            </select><br><br>
+
+            <label for="barcodeObject" id="barcodeLabel">Sendungsnummer:</label><br>
+            <input type="text" id="barcodeObject" name="barcodeObject" required><br><br>
+
+            <button type="button" onclick="previewLink()">Linkvorschau</button>
+            <button type="button" onclick="sendToPrint()">Drucken</button>
+        </form>
+
+        <div id="previewLink"></div> <!-- Container for displaying the preview link -->
+        
+        <script>
+            function generateUrl() {
+                const text1 = document.getElementById("text1Object").value;
+                const text2 = document.getElementById("text2Object").value;
+                const text3 = document.getElementById("text3Object").value;
+                const text4 = document.getElementById("text4Object").value;
+                const barcode = document.getElementById("barcodeObject").value;
+
+                const url = `brotherwebprint://print?filename=linerless.lbx&size=rd58mm.bin&text_text1=${encodeURIComponent(text1)}&text_text2=${encodeURIComponent(text2)}&text_text3=${encodeURIComponent(text3)}&text_text4=${encodeURIComponent(text4)}&text_barcode2=${encodeURIComponent(barcode)}&barcode_barcode2=${encodeURIComponent(barcode)}`;
+                return url;
+            }
+
+            function previewLink() {
+                const url = generateUrl();
+                const previewDiv = document.getElementById("previewLink");
+                if (url) {
+                    previewDiv.textContent = url; // Display the URL as text
+                } else {
+                    previewDiv.textContent = ""; // Clear if no URL
+                }
+            }
+
+            function sendToPrint() {
+                const url = generateUrl();
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
